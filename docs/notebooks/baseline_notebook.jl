@@ -98,6 +98,15 @@ md"""
 # ╔═╡ 31d477d6-ff4a-4cec-8139-7c852df9600d
 PlutoUI.TableOfContents()
 
+# ╔═╡ e9df08ad-438b-47bc-bf4b-513a73d76b44
+md"""# Model
+
+This section is dedicated to a synthetic formal presentation of the model.
+
+$$V_{t}^{i}(a_{t}^{i}, e^{p^{i}_{t}}, e^{\varepsilon^{i}_{t}}) = \max_{x}{u(c-c_0)}+\beta \cdot \mathbb{E}[V_{t+1}^{i}(a_{t+1}^{i}, e^{p^{i}_{t+1}}, e^{\varepsilon^{i}_{t+1}})]$$
+
+"""
+
 # ╔═╡ 223db08c-44e5-417e-8fe2-28b00108ce03
 md"""
 # Parameters
@@ -500,7 +509,7 @@ md"""
 begin
 	
     result = Simulations(;
-		nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid)
+		nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid, bet, exporting = true, path="test.txt")
 	
 	csim 		= result[:csim]
 	csimB 		= result[:csimB]
@@ -532,13 +541,13 @@ md"""
 # ╔═╡ 04e3cc38-62c8-4ca3-b280-9bce3ad479ac
 begin
 	# The mean of the MPC across all individuals
-	MPC_toplot_mean = csim_mean-csimB_mean
+	MPC_toplot_mean = (csim_mean - csimB_mean) ./ csimB_mean
 	# The MPC of all individuals
-	MPC_toplot = csim .- csimB
+	MPC_toplot = 100 .* (csim .- csimB) ./ csimB
 end;
 
-# ╔═╡ 310b5e0c-f21e-4fab-aab5-84759020088a
-
+# ╔═╡ f7264faf-1810-491f-a9f8-7dbb0e6cdd68
+MPC_toplot_mean
 
 # ╔═╡ 98dff502-edf7-4a82-bc21-27645c11e22e
 md"""
@@ -554,7 +563,7 @@ begin
 		ylabel = "MPC",
 		label = :none,
 		title = "MPC as a function of wealth",
-		seriestype = :scatter
+		seriestype = :path
 	)
 end
 
@@ -664,9 +673,10 @@ md"""
 # ╟─92937c58-e369-4b0d-a2e6-c50d75611999
 # ╟─008030cd-5805-4ebd-91cd-6b4c57c297a8
 # ╟─6b16a89b-a71d-45bb-9309-8e34902eb87d
-# ╟─30aec05b-f715-4860-a87c-e361d219d606
+# ╠═30aec05b-f715-4860-a87c-e361d219d606
 # ╠═edb70b5f-08f4-41c1-ab24-c1ec5deca300
 # ╟─31d477d6-ff4a-4cec-8139-7c852df9600d
+# ╠═e9df08ad-438b-47bc-bf4b-513a73d76b44
 # ╟─223db08c-44e5-417e-8fe2-28b00108ce03
 # ╠═6d2313f6-1641-475b-a8db-8b00e8d8cd54
 # ╠═c3a9536a-5842-42fa-bd1f-3cf6f38ea162
@@ -707,7 +717,7 @@ md"""
 # ╟─29d134e9-1125-4afb-b3b5-e59c3d054ef1
 # ╟─0da828e3-c519-42c6-a84d-2276994f1638
 # ╠═04e3cc38-62c8-4ca3-b280-9bce3ad479ac
-# ╠═310b5e0c-f21e-4fab-aab5-84759020088a
+# ╠═f7264faf-1810-491f-a9f8-7dbb0e6cdd68
 # ╟─98dff502-edf7-4a82-bc21-27645c11e22e
 # ╠═9d13ec83-0741-478f-81b1-13e464d19155
 # ╟─1be25c52-c7f8-4abb-9a5f-ae24de79a3b0

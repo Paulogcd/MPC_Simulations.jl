@@ -1,4 +1,5 @@
 using StatsBase
+using DelimitedFiles
 export Simulations
 
 """
@@ -8,7 +9,7 @@ export Simulations
     Simulates the life of `nsim` individuals given all the parameters.
 
 """
-function Simulations(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid)
+function Simulations(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid, bet, exporting = false, path = nothing)
     
     Simulations_1_initialisation(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid);
 
@@ -21,9 +22,14 @@ function Simulations(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, 
     # Retirement
     Simulation_4_retirement(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid);
 
-    # Return formatted result
-    results = Simulation_5_results(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid);
+    # Export function
+    if(exporting == true)
+        Simulation_5_export_results_simulations(;nsim, Ttot, algrid, Twork, Tbreak, nnsim, alsimI, bet, rng, path)
+    end
 
+    # Return formatted result
+    results = Simulation_6_results(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid);
+    
     @info ("\nSimulations done.")
 
     return results
@@ -223,7 +229,7 @@ function Simulations_3_working_life(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork
         
         end
         
-        asimB[:,it_3]=asim[:,it_3].+0.5 #=1*ysim[:,it_3-1]=#
+        asimB[:,it_3] = asim[:,it_3] .+ 0.5
 
         #edist and ztrans are what generate the trend
         while it_3<=Twork
@@ -289,6 +295,7 @@ function Simulations_3_working_life(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork
             it_3emp= sample(rng, collect(1:2), weights(lp), 1)[1,1]
             msimIB[inn,it_3] = lim[it_3emp]
             msimB[inn,it_3] = mgrid[it_3,round(Int,msimI[inn,it_3])]
+
             if it_3<Twork
                 if asimB[inn,it_3]<0
                     trsimB[inn,it_3]    = max( cfloor - (Rnetdebt*asimB[inn,it_3]+ ysimB[inn,it_3] - agrid[it_3+1,1]) ,0.0)
@@ -366,7 +373,61 @@ function Simulation_4_retirement(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, e
     end
 end
 
-function Simulation_5_results(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid)
+function Simulation_5_export_results_simulations(;nsim, Ttot, algrid, Twork, Tbreak, nnsim, alsimI, bet, rng, path)
+    
+    alsim = zeros(nsim, Ttot);
+    alsim = algrid[alsimI[:]]*ones(Ttot)';
+
+    # Export
+    dist = Normal(0, 0.01);
+    Var_error = 0.05;
+
+    nnsimplot=zeros(nsim*Ttot);
+    nnsimplot = reshape(transpose(nnsim), nsim*Ttot, 1);
+    agesimplot=zeros(nsim*Ttot);
+    agesimplot = reshape(transpose(agesim), nsim*Ttot, 1);
+    csimplot=zeros(nsim*Ttot);
+    csimplot = reshape(transpose(csim), nsim*Ttot, 1);
+    csimBplot=zeros(nsim*Ttot);
+    csimBplot = reshape(transpose(csimB), nsim*Ttot, 1);
+    asimplot=zeros(nsim*Ttot);
+    asimplot = reshape(transpose(asim), nsim*Ttot, 1);
+    asimBplot=zeros(nsim*Ttot);
+    asimBplot = reshape(transpose(asimB), nsim*Ttot, 1);
+    ysimplot=zeros(nsim*Ttot);
+    ysimplot = reshape(transpose(ysim), nsim*Ttot, 1);
+    ysimBplot=zeros(nsim*Ttot);
+    ysimBplot = reshape(transpose(ysimB), nsim*Ttot, 1);
+
+    zzsim=hcat(zsim,zeros(nsim,Ttot-Twork));
+    zzsimplot=zeros(nsim*Ttot);
+    zzsimplot = reshape(transpose(zzsim), nsim*Ttot, 1);
+    zzsimB=hcat(zsimB,zeros(nsim,Ttot-Twork));
+    zzsimBplot=zeros(nsim*Ttot);
+    zzsimBplot = reshape(transpose(zzsimB), nsim*Ttot, 1);
+    eesim=hcat(esim,zeros(nsim,Ttot-Twork));
+    eesimplot=zeros(nsim*Ttot);
+    eesimplot = reshape(transpose(eesim), nsim*Ttot, 1);
+    alsimplot=zeros(nsim*Ttot);
+    alsimplot = reshape(transpose(alsim), nsim*Ttot, 1);
+    cmesimplot=zeros(nsim*Ttot);
+    cmesimplot = reshape(transpose(exp.(randn!(rng, zeros(nsim, Ttot)).*sqrt(Var_error))), nsim*Ttot, 1);
+    ymesimplot=zeros(nsim*Ttot);
+    ymesimplot = reshape(transpose(exp.(randn!(rng, zeros(nsim,Ttot)).*sqrt(Var_error))), nsim*Ttot, 1);
+
+    Tbreakplot = zeros(nsim*Ttot);
+    Tbreakplot = reshape(transpose(Tbreak), nsim*Ttot, 1);
+
+    bett=bet.*ones((Ttot, nsim));
+    betplot=zeros(nsim*Ttot);
+    betplot = reshape(bett, nsim*Ttot, 1);
+
+    A = hcat(nnsimplot, agesimplot, csimplot, asimplot, ysimplot, zzsimplot, eesimplot, ymesimplot, cmesimplot, csimBplot, zzsimBplot, ysimBplot, asimBplot, Tbreakplot, betplot, alsimplot);
+    DelimitedFiles.writedlm(path, A)
+    @info("Results exported.")
+end
+
+function Simulation_6_results(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edist, ngpz, zdist, ypresim, alsimI, pencap, mgrid, ygrid, initwealthdist, zsimI, esimI, egrid, zgrid, kappa, yavsim, pzgrid, ypregrid, RobustInitWealth, cfloor, Rnetsave, agrid, con, R, ztrans, Rnetdebt, pind, agridret, Tret, pgrid, ppregrid, conret, annprem, algrid)
 
     alsim = zeros(nsim, Ttot)
     alsim = algrid[alsimI[:]]*ones(Ttot)'
@@ -420,3 +481,4 @@ function Simulation_5_results(;nsim, Ttot, rng, ngpal, ngpe, aldist, Twork, edis
 
     return result
 end
+

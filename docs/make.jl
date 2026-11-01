@@ -13,12 +13,6 @@ PlutoSliderServer.export_notebook(
     baseline_notebook_path;
     Export_output_dir = joinpath(@__DIR__, "src"))
 
-# For debugging purposes:
-@show pwd()
-@show readdir(joinpath(@__DIR__, "src"))
-@show isfile(joinpath(@__DIR__, "src", "baseline_notebook.html"))
-
-
 Documenter.makedocs(
     sitename = "MPC_Simulations.jl",
     # format = Documenter.HTML(),
