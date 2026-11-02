@@ -2,7 +2,7 @@
 
 julia_version = "1.13.2"
 manifest_format = "2.1"
-project_hash = "74cb7af074ebe7c7f863665d760822b89a50269c"
+project_hash = "1a3d1c079115221caa148a5799303bae35a1c278"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -781,7 +781,7 @@ uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
 version = "1.1.0"
 
 [[deps.MPC_Simulations]]
-deps = ["Distributions", "LinearAlgebra", "Plots", "Random", "StatsBase", "StatsFuns"]
+deps = ["DelimitedFiles", "Distributions", "LinearAlgebra", "Plots", "Random", "StatsBase", "StatsFuns"]
 path = ".."
 uuid = "a5351dc5-de12-4edb-8064-82b20ab8fbb5"
 version = "1.0.0-DEV"
@@ -1003,10 +1003,10 @@ version = "1.41.7"
 
 [[deps.Pluto]]
 deps = ["Base64", "Configurations", "Dates", "Downloads", "ExpressionExplorer", "FileWatching", "GracefulPkg", "HTTP", "HypertextLiteral", "InteractiveUtils", "LRUCache", "Logging", "LoggingExtras", "MIMEs", "Malt", "Markdown", "MsgPack", "Pkg", "PlutoDependencyExplorer", "PrecompileSignatures", "PrecompileTools", "REPL", "Random", "RegistryInstances", "RelocatableFolders", "SHA", "Scratch", "Sockets", "TOML", "Tables", "URIs", "UUIDs"]
-git-tree-sha1 = "ecb99a3714b5b1b3dd7498b87be2f9468f35ab7b"
+git-tree-sha1 = "3bb3d6a96633c20dfb6366217bf592ecda71659c"
 registries = "General"
 uuid = "c3e4b0f8-55cb-11ea-2926-15256bba5781"
-version = "1.0.4"
+version = "1.1.0"
 
 [[deps.PlutoDependencyExplorer]]
 deps = ["ExpressionExplorer", "InteractiveUtils", "Markdown"]
