@@ -2,7 +2,7 @@
 
 julia_version = "1.13.2"
 manifest_format = "2.1"
-project_hash = "74cb7af074ebe7c7f863665d760822b89a50269c"
+project_hash = "2a21d2c33be24cc1e6f60df610a389513cce6dff"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -281,11 +281,11 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.9.5"
 
 [[deps.Documenter]]
-deps = ["ANSIColoredPrinters", "AbstractTrees", "Base64", "CodecZlib", "Dates", "DocStringExtensions", "Downloads", "Git", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "MarkdownAST", "Pkg", "PrecompileTools", "REPL", "RegistryInstances", "SHA", "TOML", "Test", "Unicode"]
-git-tree-sha1 = "191e6bef0cf32cac3a3913cd4787d851715254c2"
+deps = ["ANSIColoredPrinters", "AbstractTrees", "Base64", "CodecZlib", "Dates", "DocStringExtensions", "Downloads", "Git", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "MarkdownAST", "Pkg", "PrecompileTools", "REPL", "RegistryInstances", "SHA", "SimpleImageMetadata", "TOML", "Test", "Unicode"]
+git-tree-sha1 = "b0c5f73f14c6fabc2161b94b873ccb5afeb0b424"
 registries = "General"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-version = "1.19.0"
+version = "1.20.0"
 
 [[deps.Downloads]]
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
@@ -781,7 +781,7 @@ uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
 version = "1.1.0"
 
 [[deps.MPC_Simulations]]
-deps = ["Distributions", "LinearAlgebra", "Plots", "Random", "StatsBase", "StatsFuns"]
+deps = ["DelimitedFiles", "Distributions", "LinearAlgebra", "Plots", "Random", "StatsBase", "StatsFuns"]
 path = ".."
 uuid = "a5351dc5-de12-4edb-8064-82b20ab8fbb5"
 version = "1.0.0-DEV"
@@ -1223,6 +1223,12 @@ git-tree-sha1 = "f305871d2f381d21527c770d4788c06c097c9bc1"
 registries = "General"
 uuid = "777ac1f9-54b0-4bf8-805c-2214025038e7"
 version = "1.2.0"
+
+[[deps.SimpleImageMetadata]]
+git-tree-sha1 = "ec017517738d90aa43f682cbab22fe74cb156608"
+registries = "General"
+uuid = "67d14529-f57e-4d48-b504-d486213b7963"
+version = "0.1.0"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
